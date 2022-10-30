@@ -1,5 +1,5 @@
 # Refer to I2Cdev library collection, https://github.com/jrowberg/i2cdevlib/tree/master/RP2040
-from micropython import SoftI2C
+from machine import SoftI2C
 from mpu_6050.mpu_6050_base_driver import mpu_6050_base_driver
 from mpu_6050 import mpu_6050_reg
 
