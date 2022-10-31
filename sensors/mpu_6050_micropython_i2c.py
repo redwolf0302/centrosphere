@@ -1,21 +1,10 @@
 # Refer to I2Cdev library collection, https://github.com/jrowberg/i2cdevlib/tree/master/RP2040
-from machine import SoftI2C
-from mpu_6050.mpu_6050_base_driver import mpu_6050_base_driver
-from mpu_6050 import mpu_6050_reg
-
-
-class mpu_6050_mp_i2c(mpu_6050_base_driver):
-    def __init__(self, sda=None, scl=None, freq=400_000) -> None:
-        assert scl is None, "'scl' must be set"
-        assert scl is None, "'sda' must be set"
-        self.i2c_addr = mpu_6050_reg.MPU6050_DEFAULT_ADDRESS
-        self.scl = scl
-        self.sda = sda
-        self.freq = freq
-        self.__init_device()
-
-    def __init_device(self):
-        self.i2c = SoftI2C(scl=self.scl, sda=self.sda, freq=self.freq)
+class MPU6050_I2C:
+    def __init__(self, i2c_addr, i2c) -> None:
+        assert i2c_addr is not None, "'i2c_addr' must be set"
+        assert i2c is not None, "'i2c' must be set"
+        self.i2c_addr = i2c_addr
+        self.i2c = i2c
 
     def readBits(self, register, bit_start, bit_length):
         mask = ((1 << bit_length)-1) << (bit_start-bit_length+1)
