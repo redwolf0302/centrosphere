@@ -390,11 +390,22 @@ class MPU6050:
         assert driver is not None, "No found driver class"
         self.driver = driver
 
-    def test_connection(self):
-        return self.get_device_id() == 0x34
+    def testConnection(self):
+        return self.getDeviceId() == 0x34
 
-    def get_device_id(self):
+    def getDeviceId(self):
         device_id = self.driver.readBits(
             MPU6050_RA_WHO_AM_I, MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH)
-        print("device id: ", device_id)
         return device_id
+
+    def initialize(self):
+        pass
+
+    def getAuxVDDIOLevel(self):
+        data = self.driver.readBit(
+            MPU6050_RA_YG_OFFS_TC, MPU6050_TC_PWR_MODE_BIT)
+        return data
+
+    def setAuxVDDIOLevel(self, level):
+        self.driver.writeBit(MPU6050_RA_YG_OFFS_TC,
+                             MPU6050_TC_PWR_MODE_BIT, level)

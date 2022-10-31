@@ -6,19 +6,21 @@ class MPU6050_I2C:
         self.i2c_addr = i2c_addr
         self.i2c = i2c
 
+    def readBit(self, register, bit_pos):
+        data = self.readByte(register)
+        bit = data & (1 << bit_pos)
+        return bit
+
     def readBits(self, register, bit_start, bit_length):
         mask = ((1 << bit_length)-1) << (bit_start-bit_length+1)
         bits = self.readByte(register)
         bits &= mask
-        bits >>= bits
+        bits >>= (bit_start - bit_length + 1)
         return bits
 
     def readByte(self, register):
-        self.i2c.start()
-        self.i2c.writeto(self.i2c_addr, bytearray([register]))
-        result = self.i2c.readfrom(self.i2c_addr, 1)
-        self.i2c.stop()
-        return result[0]
+        data = self.readBytes(register, 1)
+        return data[0]
 
     def readBytes(self, register, length):
         self.i2c.start()
@@ -27,8 +29,22 @@ class MPU6050_I2C:
         self.i2c.stop()
         return result
 
-    def write(self, register, data):
-        return super().writeBytes(register, bytearray([data]))
+    def writeBit(self, register, bit_pos, data):
+        b = self.readByte(register)
+        b = ((b | (1 << bit_pos)), (b & ~(1 < bit_pos)))[data != 0]
+        return self.writeByte(register, b)
+
+    def writeBits(self, register, bit_start, bit_length, data):
+        b = self.readByte(register)
+        mask = ((1 << bit_length)-1) << (bit_start-bit_length+1)
+        data <<= (bit_start-bit_length+1)
+        data &= mask
+        b &= ~(mask)
+        b |= data
+        return super().writeByte(register, b)
+
+    def writeByte(self, register, data):
+        return self.writeBytes(register, bytearray([data]))
 
     def writeBytes(self, register, buff):
         length = len(buff)
