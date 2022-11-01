@@ -402,10 +402,78 @@ class MPU6050:
         pass
 
     def getAuxVDDIOLevel(self):
+        """
+        Get the auxiliary I2C supply voltage level.
+        @return I2C supply voltage level (0=VLOGIC, 1=VDD)
+        """
         data = self.driver.readBit(
             MPU6050_RA_YG_OFFS_TC, MPU6050_TC_PWR_MODE_BIT)
         return data
 
     def setAuxVDDIOLevel(self, level):
+        """
+        Set the auxiliary I2C supply voltage level.
+        @param level I2C supply voltage level (0=VLOGIC, 1=VDD)
+        """
         self.driver.writeBit(MPU6050_RA_YG_OFFS_TC,
                              MPU6050_TC_PWR_MODE_BIT, level)
+
+    def getRate(self):
+        """
+        Get gyroscope output rate divider.
+        @return Current sample rate
+        """
+        return self.driver.readByte(MPU6050_RA_SMPLRT_DIV)
+
+    def setRate(self, rate):
+        """
+        Set gyroscope sample rate divider.
+        @param rate New sample rate divider
+        """
+        self.driver.writeByte(MPU6050_RA_SMPLRT_DIV, rate)
+
+    def getExternalFrameSync(self):
+        """
+        Get external FSYNC configuration.
+        @return FSYNC configuration value
+        """
+        return self.driver.readBits(
+            MPU6050_RA_CONFIG, MPU6050_CFG_EXT_SYNC_SET_BIT, MPU6050_CFG_EXT_SYNC_SET_LENGTH)
+
+    def setExternalFrameSync(self, sync):
+        """
+        Set external FSYNC configuration.
+        @param sync New FSYNC configuration value
+        """
+        self.driver.writeBits(
+            MPU6050_RA_CONFIG, MPU6050_CFG_EXT_SYNC_SET_BIT, MPU6050_CFG_EXT_SYNC_SET_LENGTH, sync)
+
+    def getDLPFMode(self):
+        """
+        Get digital low-pass filter configuration.
+        @return DLFP configuration
+        """
+        return self.driver.readBits(MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT, MPU6050_CFG_DLPF_CFG_LENGTH)
+
+    def setDLPFMode(self, mode):
+        """
+        Set digital low-pass filter configuration.
+        @param mode New DLFP configuration setting
+        """
+        self.driver.writeBits(
+            MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT, MPU6050_CFG_DLPF_CFG_LENGTH, mode)
+
+    def getFullScaleGyroRange(self):
+        """
+        Get full-scale gyroscope range.
+        @return Current full-scale gyroscope range setting
+        """
+        return self.driver.readBits(MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT, MPU6050_GCONFIG_FS_SEL_LENGTH)
+
+    def setFullScaleGyroRange(self, range):
+        """
+        Set full-scale gyroscope range.
+        @param range New full-scale gyroscope range value
+        """
+        self.driver.writeBits(
+            MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT, MPU6050_GCONFIG_FS_SEL_LENGTH, range)

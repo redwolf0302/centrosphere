@@ -1,5 +1,5 @@
 # Refer to I2Cdev library collection, https://github.com/jrowberg/i2cdevlib/tree/master/RP2040
-class MPU6050_I2C:
+class MICROPYTHON_I2C:
     def __init__(self, i2c_addr, i2c) -> None:
         assert i2c_addr is not None, "'i2c_addr' must be set"
         assert i2c is not None, "'i2c' must be set"
