@@ -666,4 +666,44 @@ class MPU6050:
         self.driver.writeByte(MPU6050_RA_ZRMOT_DUR, duration)
 
     def getTemperatureFIFOEnabled(self):
+        """
+        Get temperature FIFO enabled value.
+        @return Current temperature FIFO enabled value
+        """
         return self.driver.readBit(MPU6050_RA_FIFO_EN, MPU6050_TEMP_FIFO_EN_BIT)
+
+    def setTemperatureFIFOEnabled(self, enabled):
+        """
+        Set temperature FIFO enabled value.
+        @param enabled New temperature FIFO enabled value
+        """
+        self.driver.writeBit(MPU6050_RA_FIFO_EN,
+                             MPU6050_TEMP_FIFO_EN_BIT, enabled)
+
+    def getXGyroFIFOEnabled(self):
+        return self.driver.readBit(MPU6050_RA_FIFO_EN, MPU6050_XG_FIFO_EN_BIT)
+
+    def setXGyroFIFOEnabled(self, enabled):
+        self.driver.writeBit(MPU6050_RA_FIFO_EN,
+                             MPU6050_XG_FIFO_EN_BIT, enabled)
+
+    def getYGyroFIFOEnabled(self):
+        return self.driver.readBit(MPU6050_RA_FIFO_EN, MPU6050_YG_FIFO_EN_BIT)
+
+    def setYGyroFIFOEnabled(self, enabled):
+        self.driver.writeBit(MPU6050_RA_FIFO_EN,
+                             MPU6050_YG_FIFO_EN_BIT, enabled)
+
+    def getZGyroFIFOEnabled(self):
+        return self.driver.readBit(MPU6050_RA_FIFO_EN, MPU6050_ZG_FIFO_EN_BIT)
+
+    def setZGyroFIFOEnabled(self, enabled):
+        self.driver.writeBit(MPU6050_RA_FIFO_EN,
+                             MPU6050_ZG_FIFO_EN_BIT, enabled)
+
+    def getAccelFIFOEnabled(self):
+        return self.driver.readBit(MPU6050_RA_FIFO_EN, MPU6050_ACCEL_FIFO_EN_BIT)
+
+    def setAccelFIFOEnabled(self, enabled):
+        self.driver.writeBit(MPU6050_RA_FIFO_EN,
+                             MPU6050_ACCEL_FIFO_EN_BIT, enabled)
