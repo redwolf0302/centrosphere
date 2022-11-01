@@ -477,3 +477,31 @@ class MPU6050:
         """
         self.driver.writeBits(
             MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT, MPU6050_GCONFIG_FS_SEL_LENGTH, range)
+
+    def getAccelXSelfTestFactoryTrim(self):
+        """
+        Get self-test factory trim value for accelerometer X axis.
+        @return factory trim value
+        """
+        buffer = bytearray(2)
+        buffer[0] = self.driver.readByte(MPU6050_RA_SELF_TEST_X)
+        buffer[1] = self.driver.readByte(MPU6050_RA_SELF_TEST_A)
+        return (buffer[0] >> 3) | ((buffer[1] >> 4) & 0x03)
+
+    def getAccelYSelfTestFactoryTrim(self):
+        """
+        Get self-test factory trim value for accelerometer Y axis.
+        @return factory trim value
+        """
+        buffer = bytearray(2)
+        buffer[0] = self.driver.readByte(MPU6050_RA_SELF_TEST_Y)
+        buffer[1] = self.driver.readByte(MPU6050_RA_SELF_TEST_A)
+        return (buffer[0] >> 3) | ((buffer[1] >> 2) & 0x03)
+
+    def getAccelYSelfTestFactoryTrim(self):
+        """
+        Get self-test factory trim value for accelerometer Z axis.
+        @return factory trim value
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_SELF_TEST_Z, 2)
+        return (buffer[0] >> 3) | ((buffer[1]) & 0x03)
