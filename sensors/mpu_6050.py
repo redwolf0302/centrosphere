@@ -681,29 +681,334 @@ class MPU6050:
                              MPU6050_TEMP_FIFO_EN_BIT, enabled)
 
     def getXGyroFIFOEnabled(self):
+        """
+        Get gyroscope X-axis FIFO enabled value.
+        @return Current gyroscope X-axis FIFO enabled value
+        """
         return self.driver.readBit(MPU6050_RA_FIFO_EN, MPU6050_XG_FIFO_EN_BIT)
 
     def setXGyroFIFOEnabled(self, enabled):
+        """
+        Set gyroscope X-axis FIFO enabled value.
+        @param enabled New gyroscope X-axis FIFO enabled value
+        """
         self.driver.writeBit(MPU6050_RA_FIFO_EN,
                              MPU6050_XG_FIFO_EN_BIT, enabled)
 
     def getYGyroFIFOEnabled(self):
+        """
+        Get gyroscope Y-axis FIFO enabled value.
+        @return Current gyroscope Y-axis FIFO enabled value
+        """
         return self.driver.readBit(MPU6050_RA_FIFO_EN, MPU6050_YG_FIFO_EN_BIT)
 
     def setYGyroFIFOEnabled(self, enabled):
+        """
+        Set gyroscope Y-axis FIFO enabled value.
+        @param enabled New gyroscope Y-axis FIFO enabled value
+        """
         self.driver.writeBit(MPU6050_RA_FIFO_EN,
                              MPU6050_YG_FIFO_EN_BIT, enabled)
 
     def getZGyroFIFOEnabled(self):
+        """
+        Get gyroscope Z-axis FIFO enabled value.
+        @return Current gyroscope Z-axis FIFO enabled value
+        """
         return self.driver.readBit(MPU6050_RA_FIFO_EN, MPU6050_ZG_FIFO_EN_BIT)
 
     def setZGyroFIFOEnabled(self, enabled):
+        """
+        Set gyroscope Z-axis FIFO enabled value.
+        @param enabled New gyroscope Z-axis FIFO enabled value
+        """
         self.driver.writeBit(MPU6050_RA_FIFO_EN,
                              MPU6050_ZG_FIFO_EN_BIT, enabled)
 
     def getAccelFIFOEnabled(self):
+        """
+        Get accelerometer FIFO enabled value.
+        @return Current accelerometer FIFO enabled value
+        """
         return self.driver.readBit(MPU6050_RA_FIFO_EN, MPU6050_ACCEL_FIFO_EN_BIT)
 
     def setAccelFIFOEnabled(self, enabled):
+        """
+        Set accelerometer FIFO enabled value.
+        @param enabled New accelerometer FIFO enabled value
+        """
         self.driver.writeBit(MPU6050_RA_FIFO_EN,
                              MPU6050_ACCEL_FIFO_EN_BIT, enabled)
+
+    def getPassthroughStatus(self):
+        """
+        Get FSYNC interrupt status.
+        @return FSYNC interrupt status
+        """
+        return self.driver.readBit(MPU6050_RA_I2C_MST_STATUS, MPU6050_MST_PASS_THROUGH_BIT)
+
+    def getInterruptMode(self):
+        """
+        Get interrupt logic level mode.
+        @return Current interrupt mode (0=active-high, 1=active-low)
+        """
+        return self.driver.readBit(MPU6050_RA_INT_PIN_CFG,
+                                   MPU6050_INTCFG_INT_LEVEL_BIT)
+
+    def setInterruptMode(self, mode):
+        """
+        Set interrupt logic level mode.
+        @param mode New interrupt mode (0=active-high, 1=active-low)
+        """
+        self.driver.writeBit(MPU6050_RA_INT_PIN_CFG,
+                             MPU6050_INTCFG_INT_LEVEL_BIT, mode)
+
+    def getInterruptDrive(self):
+        """
+        Get interrupt drive mode.
+        @return Current interrupt drive mode (0=push-pull, 1=open-drain)
+        """
+        return self.driver.readBit(MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_INT_OPEN_BIT)
+
+    def setInterruptDrive(self, drive):
+        """
+        Set interrupt drive mode.
+        @param drive New interrupt drive mode (0=push-pull, 1=open-drain)
+        """
+        self.driver.writeBit(MPU6050_RA_INT_PIN_CFG,
+                             MPU6050_INTCFG_INT_OPEN_BIT, drive)
+
+    def getInterruptLatch(self):
+        """
+        Get interrupt latch mode.
+        @return Current latch mode (0=50us-pulse, 1=latch-until-int-cleared)
+        """
+        return self.driver.readBit(MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_LATCH_INT_EN_BIT)
+
+    def setInterruptLatch(self, latch):
+        """
+        Set interrupt latch mode.
+        @param latch New latch mode (0=50us-pulse, 1=latch-until-int-cleared)
+        """
+        self.driver.writeBit(MPU6050_RA_INT_PIN_CFG,
+                             MPU6050_INTCFG_LATCH_INT_EN_BIT, latch)
+
+    def getInterruptLatchClear(self):
+        """
+        Get interrupt latch clear mode.
+        @return Current latch clear mode (0=status-read-only, 1=any-register-read)
+        """
+        return self.driver.readBit(MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_INT_RD_CLEAR_BIT)
+
+    def setInterruptLatchClear(self, clear):
+        """
+        Set interrupt latch clear mode.
+        @param clear New latch clear mode (0=status-read-only, 1=any-register-read)
+        """
+        self.driver.writeBit(MPU6050_RA_INT_PIN_CFG,
+                             MPU6050_INTCFG_INT_RD_CLEAR_BIT, clear)
+
+    def getFSyncInterruptLevel(self):
+        """
+        Get FSYNC interrupt logic level mode.
+        @return Current FSYNC interrupt mode (0=active-high, 1=active-low)
+        """
+        return self.driver.readBit(MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT)
+
+    def setFSyncInterruptLevel(self, level):
+        """
+        Set FSYNC interrupt logic level mode.
+        @param mode New FSYNC interrupt mode (0=active-high, 1=active-low)
+        """
+        self.driver.writeBit(MPU6050_RA_INT_PIN_CFG,
+                             MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT, level)
+
+    def getFSyncInterruptEnabled(self):
+        """
+        Get FSYNC pin interrupt enabled setting.
+        @return Current interrupt enabled setting
+        """
+        return self.driver.readBit(MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_FSYNC_INT_EN_BIT)
+
+    def setFSyncInterruptEnabled(self, enabled):
+        """
+        Set FSYNC pin interrupt enabled setting.
+        @param enabled New FSYNC pin interrupt enabled setting
+        """
+        self.driver.writeBit(MPU6050_RA_INT_PIN_CFG,
+                             MPU6050_INTCFG_FSYNC_INT_EN_BIT, enabled)
+
+    def getI2CBypassEnabled(self):
+        """
+        Get I2C bypass enabled status.
+        @return Current I2C bypass enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_I2C_BYPASS_EN_BIT)
+
+    def setI2CBypassEnabled(self, enabled):
+        """
+        Set I2C bypass enabled status.
+        @param enabled New I2C bypass enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_INT_PIN_CFG,
+                             MPU6050_INTCFG_I2C_BYPASS_EN_BIT, enabled)
+
+    def getClockOutputEnabled(self):
+        """
+        Get reference clock output enabled status.
+        @return Current reference clock output enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_CLKOUT_EN_BIT)
+
+    def setClockOutputEnabled(self, enabled):
+        """
+        Set reference clock output enabled status.
+        @param enabled New reference clock output enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_INT_PIN_CFG,
+                             MPU6050_INTCFG_CLKOUT_EN_BIT, enabled)
+
+    def getIntEnabled(self):
+        """
+        Get full interrupt enabled status.
+        @return Current interrupt enabled status
+        """
+        return self.driver.readByte(MPU6050_RA_INT_ENABLE)
+
+    def setIntEnabled(self, enabled):
+        """
+        Set full interrupt enabled status.
+        @param enabled New interrupt enabled status
+        """
+        self.driver.writeByte(MPU6050_RA_INT_ENABLE, enabled)
+
+    def getIntFreefallEnabled(self):
+        """
+        Get Free Fall interrupt enabled status.
+        @return Current interrupt enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_FF_BIT)
+
+    def setIntFreefallEnabled(self, enabled):
+        """
+        Set Free Fall interrupt enabled status.
+        @param enabled New interrupt enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_INT_ENABLE,
+                             MPU6050_INTERRUPT_FF_BIT, enabled)
+
+    def getIntMotionEnabled(self):
+        """
+        Get Motion Detection interrupt enabled status.
+        @return Current interrupt enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_MOT_BIT)
+
+    def setIntMotionEnabled(self, enabled):
+        """
+        Set Motion Detection interrupt enabled status.
+        @param enabled New interrupt enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_INT_ENABLE,
+                             MPU6050_INTERRUPT_MOT_BIT, enabled)
+
+    def getIntZeroMotionEnabled(self):
+        """
+        Get Zero Motion Detection interrupt enabled status.
+        @return Current interrupt enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_ZMOT_BIT)
+
+    def setIntZeroMotionEnabled(self, enabled):
+        """
+        Set Zero Motion Detection interrupt enabled status.
+        @param enabled New interrupt enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_INT_ENABLE,
+                             MPU6050_INTERRUPT_ZMOT_BIT, enabled)
+
+    def getIntFIFOBufferOverflowEnabled(self):
+        """
+        Get FIFO Buffer Overflow interrupt enabled status.
+        @return Current interrupt enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_FIFO_OFLOW_BIT)
+
+    def setIntFIFOBufferOverflowEnabled(self, enabled):
+        """
+        Set FIFO Buffer Overflow interrupt enabled status.
+        @param enabled New interrupt enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_INT_ENABLE,
+                             MPU6050_INTERRUPT_FIFO_OFLOW_BIT, enabled)
+
+    def getIntDataReadyEnabled(self):
+        """
+        Get Data Ready interrupt enabled setting.
+        @return Current interrupt enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_DATA_RDY_BIT)
+
+    def setIntDataReadyEnabled(self, enabled):
+        """
+        Set Data Ready interrupt enabled status.
+        @param enabled New interrupt enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_INT_ENABLE,
+                             MPU6050_INTERRUPT_DATA_RDY_BIT, enabled)
+
+    def getIntStatus(self):
+        """
+        Get full set of interrupt status bits.
+        @return Current interrupt status
+        """
+        return self.driver.readByte(MPU6050_RA_INT_STATUS)
+
+    def getIntFreefallStatus(self):
+        """
+        Get Free Fall interrupt status.
+        @return Current interrupt status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_FF_BIT)
+
+    def getIntMotionStatus(self):
+        """
+        Get Motion Detection interrupt status.
+        @return Current interrupt status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_MOT_BIT)
+
+    def getIntZeroMotionStatus(self):
+        """
+        Get Zero Motion Detection interrupt status.
+        @return Current interrupt status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_ZMOT_BIT)
+
+    def getIntFIFOBufferOverflowStatus(self):
+        """
+        Get FIFO Buffer Overflow interrupt status.
+        @return Current interrupt status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_FIFO_OFLOW_BIT)
+
+    def getIntDataReadyStatus(self):
+        """
+        Get Data Ready interrupt status.
+        @return Current interrupt status
+        """
+        return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_DATA_RDY_BIT)
+
+    def getMotion9(self):
+        ax, ay, az, gx, gy, gz = self.getMotion6()
+        return (ax, ay, az, gx, gy, gz, 0, 0, 0)
+
+    def getMotion6(self):
+        buffer = self.driver.readBytes(MPU6050_RA_ACCEL_XOUT_H, 14)
+        ax = (buffer[0] << 8) | buffer[1]
+        ay = (buffer[2] << 8) | buffer[3]
+        az = (buffer[4] << 8) | buffer[5]
+        gx = (buffer[8] << 8) | buffer[9]
+        gy = (buffer[10] << 8) | buffer[11]
+        gz = (buffer[12] << 8) | buffer[13]
+        return (ax, ay, az, gx, gy, gz)
