@@ -505,3 +505,81 @@ class MPU6050:
         """
         buffer = self.driver.readBytes(MPU6050_RA_SELF_TEST_Z, 2)
         return (buffer[0] >> 3) | ((buffer[1]) & 0x03)
+
+    def getGyroXSelfTestFactoryTrim(self):
+        """
+        Get self-test factory trim value for gyro X axis.
+        @return factory trim value
+        """
+        b = self.driver.readByte(MPU6050_RA_SELF_TEST_X)
+        return b & 0x1F
+
+    def getGyroYSelfTestFactoryTrim(self):
+        """
+        Get self-test factory trim value for gyro Y axis.
+        @return factory trim value
+        """
+        b = self.driver.readByte(MPU6050_RA_SELF_TEST_Y)
+        return b & 0x1F
+
+    def getGyroZSelfTestFactoryTrim(self):
+        """
+        Get self-test factory trim value for gyro Z axis.
+        @return factory trim value
+        """
+        b = self.driver.readByte(MPU6050_RA_SELF_TEST_Z)
+        return b & 0x1F
+
+    def getAccelXSelfTest(self):
+        return self.driver.readBit(MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_XA_ST_BIT)
+
+    def setAccelXSelfTest(self, enabled):
+        self.driver.writeBit(MPU6050_RA_ACCEL_CONFIG,
+                             MPU6050_ACONFIG_XA_ST_BIT, enabled)
+
+    def getAccelYSelfTest(self):
+        return self.driver.readBit(MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_YA_ST_BIT)
+
+    def setAccelYSelfTest(self, enabled):
+        self.driver.writeBit(MPU6050_RA_ACCEL_CONFIG,
+                             MPU6050_ACONFIG_YA_ST_BIT, enabled)
+
+    def getAccelZSelfTest(self):
+        return self.driver.readBit(MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_ZA_ST_BIT)
+
+    def setAccelZSelfTest(self, enabled):
+        self.driver.writeBit(MPU6050_RA_ACCEL_CONFIG,
+                             MPU6050_ACONFIG_ZA_ST_BIT, enabled)
+
+    def getFullScaleAccelRange(self):
+        """
+        Get full-scale accelerometer range.
+        @return Current full-scale accelerometer range setting
+        """
+        return self.driver.readBits(MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT, MPU6050_ACONFIG_AFS_SEL_LENGTH)
+
+    def setFullScaleAccelRange(self, range):
+        """
+        Set full-scale accelerometer range.
+        @param range New full-scale accelerometer range setting
+        """
+        self.driver.writeBits(
+            MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT, MPU6050_ACONFIG_AFS_SEL_LENGTH, range)
+
+    def getDHPFMode(self):
+        """
+        Get the high-pass filter configuration.
+        @return Current high-pass filter configuration
+        """
+        return self.driver.readBits(MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_ACCEL_HPF_BIT, MPU6050_ACONFIG_ACCEL_HPF_LENGTH)
+
+    def setDHPFMode(self, bandwidth):
+        """
+        Set the high-pass filter configuration.
+        @param bandwidth New high-pass filter configuration
+        """
+        self.driver.writeBits(MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_ACCEL_HPF_BIT,
+                              MPU6050_ACONFIG_ACCEL_HPF_LENGTH, bandwidth)
+
+    def getFreefallDetectionThreshold(self):
+        return self.driver.readByte(MPU6050_RA_FF_THR)
