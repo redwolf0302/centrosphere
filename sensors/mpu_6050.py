@@ -582,4 +582,85 @@ class MPU6050:
                               MPU6050_ACONFIG_ACCEL_HPF_LENGTH, bandwidth)
 
     def getFreefallDetectionThreshold(self):
+        """
+        Get free-fall event acceleration threshold.
+        @return Current free-fall acceleration threshold value (LSB = 2mg)
+        """
         return self.driver.readByte(MPU6050_RA_FF_THR)
+
+    def setFreefallDetectionThreshold(self, threshold):
+        """
+        Set free-fall event acceleration threshold.
+        @param threshold New free-fall acceleration threshold value (LSB = 2mg)
+        """
+        self.driver.writeByte(MPU6050_RA_FF_THR, threshold)
+
+    def getFreefallDetectionDuration(self):
+        """
+        Get free-fall event duration threshold.
+        @return Current free-fall duration threshold value (LSB = 1ms)
+        """
+        return self.driver.readByte(MPU6050_RA_FF_DUR)
+
+    def setFreefallDetectionDuration(self, duration):
+        """
+        Set free-fall event duration threshold.
+        @param duration New free-fall duration threshold value (LSB = 1ms)
+        """
+        self.driver.writeByte(MPU6050_RA_FF_DUR, duration)
+
+    def getMotionDetectionThreshold(self):
+        """
+        Get motion detection event acceleration threshold.
+        @return Current motion detection acceleration threshold value (LSB = 2mg)
+        """
+        return self.driver.readByte(MPU6050_RA_MOT_THR)
+
+    def setMotionDetectionThreshold(self, threshold):
+        """
+        Set motion detection event acceleration threshold.
+        @param threshold New motion detection acceleration threshold value (LSB = 2mg)
+        """
+        self.driver.writeByte(MPU6050_RA_MOT_THR, threshold)
+
+    def getMotionDetectionDuration(self):
+        """
+        Get motion detection event duration threshold.
+        @return Current motion detection duration threshold value (LSB = 1ms)
+        """
+        return self.driver.readByte(MPU6050_RA_MOT_DUR)
+
+    def setMotionDetectionDuration(self, duration):
+        """
+        Set motion detection event duration threshold.
+        @param duration New motion detection duration threshold value (LSB = 1ms)
+        """
+        self.driver.writeByte(MPU6050_RA_MOT_DUR, duration)
+
+    def getZeroMotionDetectionThreshold(self):
+        """
+        Get zero motion detection event acceleration threshold.
+        @return Current zero motion detection acceleration threshold value (LSB = 2mg)
+        """
+        return self.driver.readByte(MPU6050_RA_ZRMOT_THR)
+
+    def setZeroMotionDetectionThreshold(self, threshold):
+        """
+        Set zero motion detection event acceleration threshold.
+        @param threshold New zero motion detection acceleration threshold value (LSB = 2mg)
+        """
+        self.driver.writeByte(MPU6050_RA_ZRMOT_THR, threshold)
+
+    def getZeroMotionDetectionDuration(self):
+        """
+        Get zero motion detection event duration threshold.
+        @return Current zero motion detection duration threshold value (LSB = 64ms)
+        """
+        return self.driver.readByte(MPU6050_RA_ZRMOT_DUR)
+
+    def setZeroMotionDetectionDuration(self, duration):
+        """
+        Set zero motion detection event duration threshold.
+        @param duration New zero motion detection duration threshold value (LSB = 1ms)
+        """
+        self.driver.writeByte(MPU6050_RA_ZRMOT_DUR, duration)
