@@ -664,3 +664,6 @@ class MPU6050:
         @param duration New zero motion detection duration threshold value (LSB = 1ms)
         """
         self.driver.writeByte(MPU6050_RA_ZRMOT_DUR, duration)
+
+    def getTemperatureFIFOEnabled(self):
+        return self.driver.readBit(MPU6050_RA_FIFO_EN, MPU6050_TEMP_FIFO_EN_BIT)
