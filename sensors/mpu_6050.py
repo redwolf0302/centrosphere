@@ -399,6 +399,25 @@ class MPU6050:
         self.setFullScaleAccelRange(MPU6050_ACCEL_FS_2)
         self.setSleepEnabled(False)
 
+    def dmpInitialize(self):
+        self.reset()
+        self.driver.writeBits(0x6A, 2, 3, 0B111)
+        self.driver.writeByte(0x6B, 0x01)
+        self.driver.writeByte(0x38, 0x00)
+        self.driver.writeByte(0x23, 0x00)
+        self.driver.writeByte(0x1C, 0x00)
+        self.driver.writeByte(0x37, 0x80)
+        self.driver.writeByte(0x68, 0x01)
+        self.driver.writeByte(0x19, 0x04)
+        self.driver.writeByte(0x1A, 0x01)
+
+        # self.driver.writeWords(0x70, 0x01)
+        # self.driver.writeByte(0x1B, 0x18)
+        # self.driver.writeByte(0x6A, 0xC0)
+        # self.driver.writeByte(0x38, 0x02)
+        # self.driver.writeBit(0x6A, 2, 1)
+        # self.setDMP
+
     def getAuxVDDIOLevel(self):
         """
         Get the auxiliary I2C supply voltage level.
@@ -1253,7 +1272,7 @@ class MPU6050:
         Trigger a full device reset.
         """
         self.driver.writeBit(MPU6050_RA_PWR_MGMT_1,
-                             0x00, True)
+                             MPU6050_PWR1_DEVICE_RESET_BIT, True)
 
     def getSleepEnabled(self):
         """

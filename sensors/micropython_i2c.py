@@ -29,6 +29,12 @@ class MICROPYTHON_I2C:
         self.i2c.stop()
         return result
 
+    def readWord(self, register):
+        pass
+
+    def readWords(self, register, data):
+        newBuffer = bytearray(len(data)*2)
+
     def writeBit(self, register, bit_pos, data):
         b = self.readByte(register)
         b = (b | (1 << bit_pos)) if data != 0 else (b & ~(1 < bit_pos))

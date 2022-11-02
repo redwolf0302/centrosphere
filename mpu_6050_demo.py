@@ -6,12 +6,11 @@ from sensors.micropython_i2c import MICROPYTHON_I2C
 i2c = SoftI2C(scl=Pin(3), sda=Pin(2))
 if __name__ == "__main__":
     sensor = MPU6050(driver=MICROPYTHON_I2C(MPU6050_DEFAULT_ADDRESS, i2c))
-    sensor.reset()
-    utime.sleep_ms(5)
     sensor.initialize()
-    utime.sleep_ms(5)
+    sensor.dmpInitialize()
+    utime.sleep_ms(100)
     print("test connection....", sensor.testConnection())
 
     while True:
-        print(sensor.getRotation())
-        utime.sleep_ms(50)
+        print(sensor.getMotion6())
+        utime.sleep_ms(100)
