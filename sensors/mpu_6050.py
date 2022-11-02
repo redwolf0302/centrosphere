@@ -394,7 +394,10 @@ class MPU6050:
         return self.getDeviceId() == 0x34
 
     def initialize(self):
-        pass
+        self.setClockSource(MPU6050_CLOCK_PLL_XGYRO)
+        self.setFullScaleGyroRange(MPU6050_GYRO_FS_250)
+        self.setFullScaleAccelRange(MPU6050_ACCEL_FS_2)
+        self.setSleepEnabled(False)
 
     def getAuxVDDIOLevel(self):
         """
@@ -1250,7 +1253,7 @@ class MPU6050:
         Trigger a full device reset.
         """
         self.driver.writeBit(MPU6050_RA_PWR_MGMT_1,
-                             MPU6050_PWR1_DEVICE_RESET_BIT, True)
+                             0x00, True)
 
     def getSleepEnabled(self):
         """

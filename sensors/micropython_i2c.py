@@ -31,7 +31,7 @@ class MICROPYTHON_I2C:
 
     def writeBit(self, register, bit_pos, data):
         b = self.readByte(register)
-        b = ((b | (1 << bit_pos)), (b & ~(1 < bit_pos)))[data != 0]
+        b = (b | (1 << bit_pos)) if data != 0 else (b & ~(1 < bit_pos))
         return self.writeByte(register, b)
 
     def writeBits(self, register, bit_start, bit_length, data):
@@ -41,7 +41,7 @@ class MICROPYTHON_I2C:
         data &= mask
         b &= ~(mask)
         b |= data
-        return super().writeByte(register, b)
+        return self.writeByte(register, b)
 
     def writeByte(self, register, data):
         return self.writeBytes(register, bytearray([data]))
