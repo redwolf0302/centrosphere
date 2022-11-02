@@ -393,11 +393,6 @@ class MPU6050:
     def testConnection(self):
         return self.getDeviceId() == 0x34
 
-    def getDeviceId(self):
-        device_id = self.driver.readBits(
-            MPU6050_RA_WHO_AM_I, MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH)
-        return device_id
-
     def initialize(self):
         pass
 
@@ -1000,15 +995,517 @@ class MPU6050:
         return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_DATA_RDY_BIT)
 
     def getMotion9(self):
+        """
+        Get raw 9-axis motion sensor readings (accel/gyro/compass).
+        @return A new tuple, include: ax, ay, az, gx, gy, gz, mx, my, mz
+        """
         ax, ay, az, gx, gy, gz = self.getMotion6()
         return (ax, ay, az, gx, gy, gz, 0, 0, 0)
 
     def getMotion6(self):
+        """
+        Get raw 6-axis motion sensor readings (accel/gyro).
+        @return A new tuple, include: ax, ay, az, gx, gy, gz
+        """
         buffer = self.driver.readBytes(MPU6050_RA_ACCEL_XOUT_H, 14)
         ax = (buffer[0] << 8) | buffer[1]
         ay = (buffer[2] << 8) | buffer[3]
         az = (buffer[4] << 8) | buffer[5]
+        # skip temperature
         gx = (buffer[8] << 8) | buffer[9]
         gy = (buffer[10] << 8) | buffer[11]
         gz = (buffer[12] << 8) | buffer[13]
         return (ax, ay, az, gx, gy, gz)
+
+    def getAcceleration(self):
+        """
+        Get 3-axis accelerometer readings.
+        @return A new tuple, include: ax, ay, az
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_ACCEL_XOUT_H, 6)
+        ax = (buffer[0] << 8) | buffer[1]
+        ay = (buffer[2] << 8) | buffer[3]
+        az = (buffer[4] << 8) | buffer[5]
+        return (ax, ay, az)
+
+    def getAccelerationX(self):
+        """
+        Get X-axis accelerometer reading.
+        @return X-axis acceleration measurement in 16-bit 2's complement format
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_ACCEL_XOUT_H, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def getAccelerationY(self):
+        """
+        Get Y-axis accelerometer reading.
+        @return Y-axis acceleration measurement in 16-bit 2's complement format
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_ACCEL_YOUT_H, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def getAccelerationZ(self):
+        """
+        Get Z-axis accelerometer reading.
+        @return Z-axis acceleration measurement in 16-bit 2's complement format
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_ACCEL_ZOUT_H, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def getTemperature(self):
+        """
+        Get current internal temperature.
+        @return Temperature reading in 16-bit 2's complement format
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_TEMP_OUT_H, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def getRotation(self):
+        """
+        Get 3-axis gyroscope readings.
+        @return A new tuple, include: x, y, z
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_GYRO_XOUT_H, 6)
+        x = (buffer[0] << 8) | buffer[1]
+        y = (buffer[2] << 8) | buffer[3]
+        z = (buffer[4] << 8) | buffer[5]
+        return (x, y, z)
+
+    def getRotationX(self):
+        """
+        Get X-axis gyroscope reading.
+        @return X-axis rotation measurement in 16-bit 2's complement format
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_GYRO_XOUT_H, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def getRotationY(self):
+        """
+        Get Y-axis gyroscope reading.
+        @return Y-axis rotation measurement in 16-bit 2's complement format
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_GYRO_YOUT_H, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def getRotationZ(self):
+        """
+        Get Z-axis gyroscope reading.
+        @return Z-axis rotation measurement in 16-bit 2's complement format
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_GYRO_ZOUT_H, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def getMotionStatus(self):
+        """
+        Get full motion detection status register content (all bits).
+        @return Motion detection status byte
+        """
+        return self.driver.readByte(MPU6050_RA_MOT_DETECT_STATUS)
+
+    def getXNegMotionDetected(self):
+        """
+        Get X-axis negative motion detection interrupt status.
+        @return Motion detection status
+        """
+        return self.driver.readBit(MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_XNEG_BIT)
+
+    def getXPosMotionDetected(self):
+        """
+        Get X-axis positive motion detection interrupt status.
+        @return Motion detection status
+        """
+        return self.driver.readBit(MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_XPOS_BIT)
+
+    def getYNegMotionDetected(self):
+        """
+        Get Y-axis negative motion detection interrupt status.
+        @return Motion detection status
+        """
+        return self.driver.readBit(MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_YNEG_BIT)
+
+    def getYPosMotionDetected(self):
+        """
+        Get Y-axis positive motion detection interrupt status.
+        @return Motion detection status
+        """
+        return self.driver.readBit(MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_YPOS_BIT)
+
+    def getZNegMotionDetected(self):
+        """
+        Get Z-axis negative motion detection interrupt status.
+        @return Motion detection status
+        """
+        return self.driver.readBit(MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_ZNEG_BIT)
+
+    def getZPosMotionDetected(self):
+        """
+        Get Z-axis positive motion detection interrupt status.
+        @return Motion detection status
+        """
+        return self.driver.readBit(MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_ZPOS_BIT)
+
+    def getZeroMotionDetected(self):
+        """
+        Get zero motion detection interrupt status.
+        @return Motion detection status
+        """
+        return self.driver.readBit(MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_ZRMOT_BIT)
+
+    def resetGyroscopePath(self):
+        """
+        Reset gyroscope signal path.
+        """
+        self.driver.writeBit(MPU6050_RA_SIGNAL_PATH_RESET,
+                             MPU6050_PATHRESET_GYRO_RESET_BIT, True)
+
+    def resetAccelerometerPath(self):
+        """
+        Reset accelerometer signal path.
+        """
+        self.driver.writeBit(MPU6050_RA_SIGNAL_PATH_RESET,
+                             MPU6050_PATHRESET_ACCEL_RESET_BIT, True)
+
+    def resetTemperaturePath(self):
+        """
+        Reset temperature sensor signal path.
+        """
+        self.driver.writeBit(MPU6050_RA_SIGNAL_PATH_RESET,
+                             MPU6050_PATHRESET_TEMP_RESET_BIT, True)
+
+    def getAccelerometerPowerOnDelay(self):
+        """
+        Get accelerometer power-on delay.
+        @return Current accelerometer power-on delay
+        """
+        return self.driver.readBits(MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_ACCEL_ON_DELAY_BIT, MPU6050_DETECT_ACCEL_ON_DELAY_LENGTH)
+
+    def setAccelerometerPowerOnDelay(self, delay):
+        """
+        Set accelerometer power-on delay.
+        @param delay New accelerometer power-on delay (0-3)
+        """
+        self.driver.writeBits(MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_ACCEL_ON_DELAY_BIT,
+                              MPU6050_DETECT_ACCEL_ON_DELAY_LENGTH, delay)
+
+    def getFreefallDetectionCounterDecrement(self):
+        """
+        Get Free Fall detection counter decrement configuration.
+        @return Current decrement configuration
+        """
+        return self.driver.readBits(MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_FF_COUNT_BIT, MPU6050_DETECT_FF_COUNT_LENGTH)
+
+    def setFreefallDetectionCounterDecrement(self, decrement):
+        """
+        Set Free Fall detection counter decrement configuration.
+        @param decrement New decrement configuration value
+        """
+        self.driver.writeBits(MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_FF_COUNT_BIT,
+                              MPU6050_DETECT_FF_COUNT_LENGTH, decrement)
+
+    def getMotionDetectionCounterDecrement(self):
+        """
+        Get Motion detection counter decrement configuration.
+        """
+        return self.driver.readBits(MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_MOT_COUNT_BIT, MPU6050_DETECT_MOT_COUNT_LENGTH)
+
+    def setMotionDetectionCounterDecrement(self, decrement):
+        """
+        Set Motion detection counter decrement configuration.
+        @param decrement New decrement configuration value
+        """
+        self.driver.writeBits(MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_MOT_COUNT_BIT,
+                              MPU6050_DETECT_MOT_COUNT_LENGTH, decrement)
+
+    def getFIFOEnabled(self):
+        """
+        Get FIFO enabled status.
+        @return Current FIFO enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_FIFO_EN_BIT)
+
+    def setFIFOEnabled(self, enabled):
+        """
+        Set FIFO enabled status.
+        @param enabled New FIFO enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_USER_CTRL,
+                             MPU6050_USERCTRL_FIFO_EN_BIT, enabled)
+
+    def resetFIFO(self):
+        """
+        Reset the FIFO.
+        """
+        self.driver.writeBit(MPU6050_RA_USER_CTRL,
+                             MPU6050_USERCTRL_FIFO_RESET_BIT, True)
+
+    def resetSensors(self):
+        """
+        Reset all sensor registers and signal paths.
+        """
+        self.driver.writeBit(MPU6050_RA_USER_CTRL,
+                             MPU6050_USERCTRL_SIG_COND_RESET_BIT, True)
+
+    def reset(self):
+        """
+        Trigger a full device reset.
+        """
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_1,
+                             MPU6050_PWR1_DEVICE_RESET_BIT, True)
+
+    def getSleepEnabled(self):
+        """
+        Get sleep mode status.
+        @return Current sleep mode enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_SLEEP_BIT)
+
+    def setSleepEnabled(self, enabled):
+        """
+        Set sleep mode status.
+        @param enabled New sleep mode enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_1,
+                             MPU6050_PWR1_SLEEP_BIT, enabled)
+
+    def getWakeCycleEnabled(self):
+        """
+        Get wake cycle enabled status.
+        @return Current sleep mode enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CYCLE_BIT)
+
+    def setWakeCycleEnabled(self, enabled):
+        """
+        Set wake cycle enabled status.
+        @param enabled New sleep mode enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_1,
+                             MPU6050_PWR1_CYCLE_BIT, enabled)
+
+    def getTemperatureSensorEnabled(self):
+        """
+        Get temperature sensor enabled status.
+        @return Current temperature sensor enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_TEMP_DIS_BIT)
+
+    def setTemperatureSensorEnabled(self, enabled):
+        """
+        Set temperature sensor enabled status.
+        @param enabled New temperature sensor enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_1,
+                             MPU6050_PWR1_TEMP_DIS_BIT, not enabled)
+
+    def getClockSource(self):
+        """
+        Get clock source setting.
+        @return Current clock source setting
+        """
+        return self.driver.readBits(MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CLKSEL_BIT, MPU6050_PWR1_CLKSEL_LENGTH)
+
+    def setClockSource(self, source):
+        """
+        Set clock source setting.
+        @param source New clock source setting
+        """
+        self.driver.writeBits(
+            MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CLKSEL_BIT, MPU6050_PWR1_CLKSEL_LENGTH, source)
+
+    def getWakeFrequency(self):
+        """
+        Get wake frequency in Accel-Only Low Power Mode.
+        @return Current wake frequency
+        """
+        return self.driver.readBits(
+            MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_LP_WAKE_CTRL_BIT, MPU6050_PWR2_LP_WAKE_CTRL_LENGTH)
+
+    def setWakeFrequency(self, frequency):
+        """
+        Set wake frequency in Accel-Only Low Power Mode.
+        @param frequency New wake frequency
+        """
+        self.driver.writeBits(MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_LP_WAKE_CTRL_BIT,
+                              MPU6050_PWR2_LP_WAKE_CTRL_LENGTH, frequency)
+
+    def getStandbyXAccelEnabled(self):
+        """
+        Get X-axis accelerometer standby enabled status.
+        @return Current X-axis standby enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_XA_BIT)
+
+    def setStandbyXAccelEnabled(self, enabled):
+        """
+        Set X-axis accelerometer standby enabled status.
+        @param New X-axis standby enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_2,
+                             MPU6050_PWR2_STBY_XA_BIT, enabled)
+
+    def getStandbyYAccelEnabled(self):
+        """
+        Get Y-axis accelerometer standby enabled status.
+        @return Current Y-axis standby enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_YA_BIT)
+
+    def setStandbyYAccelEnabled(self, enabled):
+        """
+        Set Y-axis accelerometer standby enabled status.
+        @param New Y-axis standby enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_2,
+                             MPU6050_PWR2_STBY_YA_BIT, enabled)
+
+    def getStandbyZAccelEnabled(self):
+        """
+        Get Z-axis accelerometer standby enabled status.
+        @return Current Z-axis standby enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_ZA_BIT)
+
+    def setStandbyZAccelEnabled(self, enabled):
+        """
+        Set Z-axis accelerometer standby enabled status.
+        @param New Z-axis standby enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_2,
+                             MPU6050_PWR2_STBY_ZA_BIT, enabled)
+
+    def getStandbyXGyroEnabled(self):
+        """
+        Get X-axis gyroscope standby enabled status.
+        @return Current X-axis standby enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_XG_BIT)
+
+    def setStandbyXGyroEnabled(self, enabled):
+        """
+        Set X-axis gyroscope standby enabled status.
+        @param New X-axis standby enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_2,
+                             MPU6050_PWR2_STBY_XG_BIT, enabled)
+
+    def getStandbyYGyroEnabled(self):
+        """
+        Get Y-axis gyroscope standby enabled status.
+        @return Current Y-axis standby enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_YG_BIT)
+
+    def setStandbyYGyroEnabled(self, enabled):
+        """
+        Set Y-axis gyroscope standby enabled status.
+        @param New Y-axis standby enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_2,
+                             MPU6050_PWR2_STBY_YG_BIT, enabled)
+
+    def getStandbyZGyroEnabled(self):
+        """
+        Get Z-axis gyroscope standby enabled status.
+        @return Current Z-axis standby enabled status
+        """
+        return self.driver.readBit(MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_ZG_BIT)
+
+    def setStandbyZGyroEnabled(self, enabled):
+        """
+        Set Z-axis gyroscope standby enabled status.
+        @param New Z-axis standby enabled status
+        """
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_2,
+                             MPU6050_PWR2_STBY_ZG_BIT, enabled)
+
+    def getFIFOCount(self):
+        """
+        Get current FIFO buffer size.
+        @return Current FIFO buffer size
+        """
+        buffer = self.driver.readBytes(MPU6050_RA_FIFO_COUNTH, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def getFIFOByte(self):
+        """
+        Get byte from FIFO buffer.
+        @return Byte from FIFO buffer
+        """
+        return self.driver.readByte(MPU6050_RA_FIFO_R_W)
+
+    def getFIFOBytes(self, length):
+        return self.driver.readBytes(MPU6050_RA_FIFO_R_W, length) if length > 0 else bytearray(0)
+
+    """
+    /** Get latest byte from FIFO buffer no matter how much time has passed.
+    * ===                  GetCurrentFIFOPacket                    ===
+    * ================================================================
+    * Returns 1) when nothing special was done
+    *         2) when recovering from overflow
+    *         0) when no valid data is available
+    * ================================================================ */
+    int8_t MPU6050::GetCurrentFIFOPacket(uint8_t *data, uint8_t length)
+    { // overflow proof
+        int16_t fifoC;
+        // This section of code is for when we allowed more than 1 packet to be acquired
+        // uint32_t BreakTimer = micros();
+        uint32_t BreakTimer = time_us_32();
+        do
+        {
+            if ((fifoC = getFIFOCount()) > length)
+            {
+
+                if (fifoC > 200)
+                {                // if you waited to get the FIFO buffer to > 200 bytes it will take longer to get the last packet in the FIFO Buffer than it will take to  reset the buffer and wait for the next to arrive
+                    resetFIFO(); // Fixes any overflow corruption
+                    fifoC = 0;
+                    while (!(fifoC = getFIFOCount()) && ((time_us_32() - BreakTimer) <= (11000)))
+                        ; // Get Next New Packet
+                }
+                else
+                { // We have more than 1 packet but less than 200 bytes of data in the FIFO Buffer
+                    uint8_t Trash[BUFFER_LENGTH];
+                    while ((fifoC = getFIFOCount()) > length)
+                    {                           // Test each time just in case the MPU is writing to the FIFO Buffer
+                        fifoC = fifoC - length; // Save the last packet
+                        uint16_t RemoveBytes;
+                        while (fifoC)
+                        {                                                 // fifo count will reach zero so this is safe
+                            RemoveBytes = MIN((int)fifoC, BUFFER_LENGTH); // Buffer Length is different than the packet length this will efficiently clear the buffer
+                            getFIFOBytes(Trash, (uint8_t)RemoveBytes);
+                            fifoC -= RemoveBytes;
+                        }
+                    }
+                }
+            }
+            if (!fifoC)
+                return 0; // Called too early no data or we timed out after FIFO Reset
+            // We have 1 packet
+            if ((time_us_32() - BreakTimer) > (11000))
+                return 0;
+        } while (fifoC != length);
+        getFIFOBytes(data, length); // Get 1 packet
+        return 1;
+    }
+    """
+
+    def setFIFOByte(self, data):
+        """
+        Write byte to FIFO buffer.
+        """
+        self.driver.writeByte(MPU6050_RA_FIFO_R_W, data)
+
+    def getDeviceId(self):
+        """
+        Get Device ID.
+        @return Device ID (6 bits only! should be 0x34)
+        """
+        return self.driver.readBits(MPU6050_RA_WHO_AM_I, MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH)
+
+    def setDeviceId(self, id):
+        """
+        Set Device ID.
+        @param id New device ID to set.
+        """
+        self.driver.writeBits(
+            MPU6050_RA_WHO_AM_I, MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH, id)

@@ -6,3 +6,6 @@ i2c = SoftI2C(scl=Pin(3), sda=Pin(2))
 if __name__ == "__main__":
     sensor = MPU6050(driver=MICROPYTHON_I2C(MPU6050_DEFAULT_ADDRESS, i2c))
     print("test connection....", sensor.testConnection())
+    
+    while True:
+        sensor.getMotion6()
