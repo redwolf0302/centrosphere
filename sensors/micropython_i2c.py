@@ -11,12 +11,24 @@ class MICROPYTHON_I2C:
         bit = data & (1 << bit_pos)
         return bit
 
+    def readBitW(self, register, bit_pos):
+        data = self.readWord(register)
+        bit = data & (1 << bit_pos)
+        return bit
+
     def readBits(self, register, bit_start, bit_length):
         mask = ((1 << bit_length)-1) << (bit_start-bit_length+1)
         bits = self.readByte(register)
         bits &= mask
         bits >>= (bit_start - bit_length + 1)
         return bits
+
+    def readBitsW(self, register, bit_start, bit_length):
+        mask = ((1 << bit_length)-1) << (bit_start-bit_length+1)
+        w = self.readWord(register)
+        w &= mask
+        w >>= (bit_start - bit_length + 1)
+        return w
 
     def readByte(self, register):
         data = self.readBytes(register, 1)
@@ -30,10 +42,15 @@ class MICROPYTHON_I2C:
         return result
 
     def readWord(self, register):
-        pass
+        return self.readWords(register, 1)
 
-    def readWords(self, register, data):
-        newBuffer = bytearray(len(data)*2)
+    def readWords(self, register, length):
+        newLength = length*2
+        data = bytearray(newLength)
+        buffer = self.readBytes(register, newLength)
+        for i in range(length):
+            data[i] = (buffer[i*2] << 8) | buffer[i*2+1]
+        return data
 
     def writeBit(self, register, bit_pos, data):
         b = self.readByte(register)
