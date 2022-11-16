@@ -57,6 +57,11 @@ class MICROPYTHON_I2C:
         b = (b | (1 << bit_pos)) if data != 0 else (b & ~(1 < bit_pos))
         return self.writeByte(register, b)
 
+    def writeBitW(self, register, bit_pos, data):
+        w = self.readWord(register)
+        w = (w | (1 << bit_pos)) if data != 0 else (w & ~(1 << bit_pos))
+        self.writeWord(register, w)
+
     def writeBits(self, register, bit_start, bit_length, data):
         b = self.readByte(register)
         mask = ((1 << bit_length)-1) << (bit_start-bit_length+1)
@@ -66,8 +71,20 @@ class MICROPYTHON_I2C:
         b |= data
         return self.writeByte(register, b)
 
+    def writeBitsW(self, register, bit_start, bit_length, data):
+        w = self.readWord(register)
+        mask = ((1 << bit_length)-1) << (bit_start-bit_length+1)
+        data <<= (bit_start-bit_length+1)
+        data &= mask
+        w &= ~(mask)
+        w |= data
+        return self.writeWord(register, w)
+
     def writeByte(self, register, data):
         return self.writeBytes(register, bytearray([data]))
+
+    def writeWord(self, register, data):
+        return self.writeWords(register, bytearray([data]))
 
     def writeBytes(self, register, buff):
         length = len(buff)
@@ -75,6 +92,21 @@ class MICROPYTHON_I2C:
         data_buff[0] = register
         for i in range(length):
             data_buff[i+1] = buff[i]
+
+        self.i2c.start()
+        ack = self.i2c.writeto(self.i2c_addr, data_buff)
+        self.i2c.stop()
+        return ack
+
+    def writeWords(self, register, buff):
+        length = len(buff)
+        data_buff = bytearray(length*2 + 1)
+        data_buff[0] = register
+        j = 1
+        for i in range(length):
+            data_buff[j] = buff[i] >> 8
+            data_buff[j+1] = buff[i]
+            j += 1
 
         self.i2c.start()
         ack = self.i2c.writeto(self.i2c_addr, data_buff)
