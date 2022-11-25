@@ -1531,3 +1531,176 @@ class MPU6050:
         """
         self.driver.writeBits(
             MPU6050_RA_WHO_AM_I, MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH, id)
+
+    def getOTPBankValid(self):
+        return self.driver.readBit(MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OTP_BNK_VLD_BIT)
+
+    def setOTPBankValid(self, enabled):
+        self.driver.writeBit(MPU6050_RA_XG_OFFS_TC,
+                             MPU6050_TC_OTP_BNK_VLD_BIT, enabled)
+
+    def getXGyroOffsetTC(self):
+        return self.driver.readBits(MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH)
+
+    def setXGyroOffsetTC(self, offset):
+        self.driver.writeBits(
+            MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset)
+
+    def getYGyroOffsetTC(self):
+        return self.driver.readBits(MPU6050_RA_YG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH)
+
+    def setYGyroOffsetTC(self, offset):
+        self.driver.writeBits(
+            MPU6050_RA_YG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset)
+
+    def getZGyroOffsetTC(self):
+        return self.driver.readBits(MPU6050_RA_ZG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH)
+
+    def setZGyroOffsetTC(self, offset):
+        self.driver.writeBits(
+            MPU6050_RA_ZG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset)
+
+    def getXFineGain(self):
+        return self.driver.readByte(MPU6050_RA_X_FINE_GAIN)
+
+    def setXFineGain(self, gain):
+        self.driver.writeByte(MPU6050_RA_X_FINE_GAIN, gain)
+
+    def getYFineGain(self):
+        return self.driver.readByte(MPU6050_RA_Y_FINE_GAIN)
+
+    def setYFineGain(self, gain):
+        self.driver.writeByte(MPU6050_RA_Y_FINE_GAIN, gain)
+
+    def getZFineGain(self):
+        return self.driver.readByte(MPU6050_RA_Z_FINE_GAIN)
+
+    def setZFineGain(self, gain):
+        self.driver.writeByte(MPU6050_RA_Z_FINE_GAIN, gain)
+
+    def getXAccelOffset(self):
+        # MPU6050, MPU9150 vs MPU6500, MPU9250
+        saveAddress = MPU6050_RA_XA_OFFS_H if self.getDeviceID() < 0x38 else 0x77
+        buffer = self.driver.readBytes(saveAddress, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def setXAccelOffset(self, offset):
+        # MPU6050, MPU9150 vs MPU6500, MPU9250
+        saveAddress = MPU6050_RA_XA_OFFS_H if self.getDeviceID() < 0x38 else 0x77
+        self.driver.writeWord(saveAddress, offset)
+
+    def getYAccelOffset(self):
+        # MPU6050, MPU9150 vs MPU6500, MPU9250
+        saveAddress = MPU6050_RA_YA_OFFS_H if self.getDeviceID() < 0x38 else 0x7A
+        buffer = self.driver.readBytes(saveAddress, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def setYAccelOffset(self, offset):
+        # MPU6050, MPU9150 vs MPU6500, MPU9250
+        saveAddress = MPU6050_RA_YA_OFFS_H if self.getDeviceID() < 0x38 else 0x7A
+        self.driver.writeWord(saveAddress, offset)
+
+    def getZAccelOffset(self):
+        # MPU6050, MPU9150 vs MPU6500, MPU9250
+        saveAddress = MPU6050_RA_ZA_OFFS_H if self.getDeviceID() < 0x38 else 0x7D
+        buffer = self.driver.readBytes(saveAddress, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def setZAccelOffset(self, offset):
+        # MPU6050, MPU9150 vs MPU6500, MPU9250
+        saveAddress = MPU6050_RA_ZA_OFFS_H if self.getDeviceID() < 0x38 else 0x7D
+        self.driver.writeWord(saveAddress, offset)
+
+    def getXGyroOffset(self):
+        buffer = self.driver.readBytes(MPU6050_RA_XG_OFFS_USRH, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def setXGyroOffset(self, offset):
+        self.driver.writeWord(MPU6050_RA_XG_OFFS_USRH, offset)
+
+    def getYGyroOffset(self):
+        buffer = self.driver.readBytes(MPU6050_RA_YG_OFFS_USRH, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def setYGyroOffset(self, offset):
+        self.driver.writeWord(MPU6050_RA_YG_OFFS_USRH, offset)
+
+    def getZGyroOffset(self):
+        buffer = self.driver.readBytes(MPU6050_RA_ZG_OFFS_USRH, 2)
+        return (buffer[0] << 8) | buffer[1]
+
+    def setZGyroOffset(self, offset):
+        self.driver.writeWord(MPU6050_RA_ZG_OFFS_USRH, offset)
+
+    def getIntPLLReadyEnabled(self):
+        return self.driver.readBit(MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_PLL_RDY_INT_BIT)
+
+    def setIntPLLReadyEnabled(self, enabled):
+        self.driver.writeBit(MPU6050_RA_INT_ENABLE,
+                             MPU6050_INTERRUPT_PLL_RDY_INT_BIT, enabled)
+
+    def getIntDMPEnabled(self):
+        return self.driver.readBit(MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_DMP_INT_BIT)
+
+    def setIntDMPEnabled(self, enabled):
+        self.driver.writeBit(MPU6050_RA_INT_ENABLE,
+                             MPU6050_INTERRUPT_DMP_INT_BIT, enabled)
+
+    def getDMPInt5Status(self):
+        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_5_BIT)
+
+    def getDMPInt4Status(self):
+        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_4_BIT)
+
+    def getDMPInt3Status(self):
+        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_3_BIT)
+
+    def getDMPInt2Status(self):
+        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_2_BIT)
+
+    def getDMPInt1Status(self):
+        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_1_BIT)
+
+    def getDMPInt0Status(self):
+        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_0_BIT)
+
+    def getIntPLLReadyStatus(self):
+        return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_PLL_RDY_INT_BIT)
+
+    def getIntDMPStatus(self):
+        return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_DMP_INT_BIT)
+
+    def getDMPEnabled(self):
+        return self.driver.readBit(MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_EN_BIT)
+
+    def setDMPEnabled(self, enabled):
+        self.driver.writeBit(MPU6050_RA_USER_CTRL,
+                             MPU6050_USERCTRL_DMP_EN_BIT, enabled)
+
+    def resetDMP(self):
+        self.driver.writeBit(MPU6050_RA_USER_CTRL,
+                             MPU6050_USERCTRL_DMP_RESET_BIT, True)
+
+    def setMemoryBank(self, bank, prefetchEnabled, userBank):
+        bank &= 0x1F
+        if userBank:
+            bank |= 0x20
+        if prefetchEnabled:
+            bank |= 0x40
+        self.driver.writeByte(MPU6050_RA_BANK_SEL, bank)
+
+    def setMemoryStartAddress(self, address):
+        self.driver.writeByte(MPU6050_RA_MEM_START_ADDR, address)
+
+    def readMemoryByte(self):
+        return self.driver.readByte(MPU6050_RA_MEM_R_W)
+
+    def writeMemoryByte(self, data):
+        self.driver.writeByte(MPU6050_RA_MEM_R_W, data)
+
+    # def readMemoryBlock(self, data, bank, address):
+    #     self.setMemoryBank(bank)
+    #     self.setMemoryStartAddress(address)
+    #     chunkSize = 0
+    #     dataSize = len(data)
+        # for i in range(dataSize):
