@@ -7,11 +7,23 @@ class MICROPYTHON_I2C:
         self.i2c = i2c
 
     def readBit(self, register, bit_pos):
+        """
+        Read a single bit from an 8-bit device register
+        @param register Register register to read from 
+        @param bit_pos Bit position to read (0-7)
+        @return a single 8-bit value
+        """
         data = self.readByte(register)
         bit = data & (1 << bit_pos)
         return bit
 
     def readBitW(self, register, bit_pos):
+        """
+        Read a single bit from a 16-bit device register
+        @param register Register register to read from 
+        @param bit_pos Bit position to read (0-15)
+        @return a single 16-bit
+        """
         data = self.readWord(register)
         bit = data & (1 << bit_pos)
         return bit

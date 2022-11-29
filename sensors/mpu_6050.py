@@ -391,7 +391,7 @@ class MPU6050:
         self.driver = driver
 
     def testConnection(self):
-        return self.getDeviceId() == 0x34
+        return self.getDeviceID() == 0x34
 
     def initialize(self):
         self.setClockSource(MPU6050_CLOCK_PLL_XGYRO)
@@ -1517,7 +1517,7 @@ class MPU6050:
         """
         self.driver.writeByte(MPU6050_RA_FIFO_R_W, data)
 
-    def getDeviceId(self):
+    def getDeviceID(self):
         """
         Get Device ID.
         @return Device ID (6 bits only! should be 0x34)
@@ -1699,8 +1699,40 @@ class MPU6050:
         self.driver.writeByte(MPU6050_RA_MEM_R_W, data)
 
     # def readMemoryBlock(self, data, bank, address):
-    #     self.setMemoryBank(bank)
-    #     self.setMemoryStartAddress(address)
-    #     chunkSize = 0
-    #     dataSize = len(data)
-        # for i in range(dataSize):
+    #     pass
+
+    # def writeMemoryBlock(self, data, bank, address):
+    #     pass
+
+    # def writeProgMemoryBlock(self, data, bank, address, verify, useProgMem):
+    #     self.writeMemoryBlock(data, bank, address, verify, False)
+
+    # def writeDMPConfigurationSet(self, data, useProgMem):
+    #     pass
+
+    # def writeProgDMPConfigurationSet(self, data):
+    #     return self.writeDMPConfigurationSet(data, False)
+
+    def getDMPConfig1(self):
+        return self.driver.readByte(MPU6050_RA_DMP_CFG_1)
+
+    def setDMPConfig1(self, config):
+        self.driver.writeByte(MPU6050_RA_DMP_CFG_1, config)
+
+    def getDMPConfig2(self):
+        return self.driver.readByte(MPU6050_RA_DMP_CFG_2)
+
+    def setDMPConfig2(self, config):
+        self.driver.writeByte(MPU6050_RA_DMP_CFG_2, config)
+
+    def PID(self, readAddress, kP, kI, loops):
+        saveAddress = (0x60 if self.getDeviceID() <
+                       0x38 else 0x77) if readAddress == 0x3B else 0x13
+        data = 0
+        reading = 0.0
+        # bitZero=
+        shift = 3 if saveAddress == 0x77 else 2
+        for i in 3:
+            data = self.driver.readWords(saveAddress + (i * shift), 1)
+
+            # def CalibrateGyro(loops):
