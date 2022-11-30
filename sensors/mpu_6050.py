@@ -1,5 +1,7 @@
 # Refer to I2Cdev library collection, https://github.com/jrowberg/i2cdevlib/tree/master/RP2040
 from micropython import const
+from array import array
+import utime
 
 # address pin low (GND), default for InvenSense evaluation board
 MPU6050_ADDRESS_AD0_LOW = const(0x68)
@@ -400,14 +402,18 @@ class MPU6050:
         self.setSleepEnabled(False)
 
     def dmpInitialize(self):
-        self.reset()
+        # self.reset()
+        # I2Cdev::writeBit(devAddr,0x6B, 7, (val = 1));
+        self.driver.writeBit(0x6B, 7, 1)
+        utime.sleep_ms(100)
         self.driver.writeBits(0x6A, 2, 3, 0B111)
+        utime.sleep_ms(100)
         self.driver.writeByte(0x6B, 0x01)
         self.driver.writeByte(0x38, 0x00)
         self.driver.writeByte(0x23, 0x00)
         self.driver.writeByte(0x1C, 0x00)
         self.driver.writeByte(0x37, 0x80)
-        self.driver.writeByte(0x68, 0x01)
+        self.driver.writeByte(0x6B, 0x01)
         self.driver.writeByte(0x19, 0x04)
         self.driver.writeByte(0x1A, 0x01)
 
@@ -1524,7 +1530,7 @@ class MPU6050:
         """
         return self.driver.readBits(MPU6050_RA_WHO_AM_I, MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH)
 
-    def setDeviceId(self, id):
+    def setDeviceID(self, id):
         """
         Set Device ID.
         @param id New device ID to set.
@@ -1725,14 +1731,17 @@ class MPU6050:
     def setDMPConfig2(self, config):
         self.driver.writeByte(MPU6050_RA_DMP_CFG_2, config)
 
-    def PID(self, readAddress, kP, kI, loops):
-        saveAddress = (0x60 if self.getDeviceID() <
-                       0x38 else 0x77) if readAddress == 0x3B else 0x13
-        data = 0
-        reading = 0.0
-        # bitZero=
-        shift = 3 if saveAddress == 0x77 else 2
-        for i in 3:
-            data = self.driver.readWords(saveAddress + (i * shift), 1)
-
-            # def CalibrateGyro(loops):
+    # def PID(self, readAddress, kP, kI, loops):
+    #     saveAddress = (0x60 if self.getDeviceID() <
+    #                    0x38 else 0x77) if readAddress == 0x3B else 0x13
+    #     data = None
+    #     reading = None
+    #     bitZero = array('H')
+    #     shift = 3 if saveAddress == 0x77 else 2
+    #     error = None
+    #     pTerm = None
+    #     iTerm = array('f')
+    #     eSample = None
+    #     eSum = None
+    #     for i in 3:
+    #         data = self.driver.readWords(saveAddress + (i * shift), 1)
