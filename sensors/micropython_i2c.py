@@ -1,4 +1,7 @@
 # Refer to I2Cdev library collection, https://github.com/jrowberg/i2cdevlib/tree/master/RP2040
+import ustruct
+
+
 class MICROPYTHON_I2C:
     def __init__(self, i2c_addr, i2c) -> None:
         assert i2c_addr is not None, "'i2c_addr' must be set"
@@ -71,11 +74,10 @@ class MICROPYTHON_I2C:
 
     def readWords(self, register, length):
         newLength = length*2
-        data = bytearray(newLength)
+        data = bytearray(length)
         buffer = self.readBytes(register, newLength)
-        for i in range(length):
-            data[i] = (buffer[i*2] << 8) | buffer[i*2+1]
-        return data
+        unpacked_buffer = ustruct.unpack('>'+('h'*length), buffer)
+        return unpacked_buffer
 
     def writeBit(self, register, bit_pos, data):
         b = self.readByte(register)

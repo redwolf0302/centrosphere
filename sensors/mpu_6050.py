@@ -2,6 +2,7 @@
 from micropython import const
 from array import array
 import utime
+import ustruct
 
 # address pin low (GND), default for InvenSense evaluation board
 MPU6050_ADDRESS_AD0_LOW = const(0x68)
@@ -394,6 +395,26 @@ class MPU6050:
 
     def testConnection(self):
         return self.getDeviceID() == 0x34
+
+    def initializeV2(self):
+        self.driver.writeByte(MPU6050_RA_PWR_MGMT_1, 0x01)
+        self.driver.writeByte(MPU6050_RA_CONFIG, 0x03)
+        self.driver.writeByte(MPU6050_RA_SMPLRT_DIV, 0x04)
+
+        c = self.driver.readByte(MPU6050_RA_GYRO_CONFIG)
+        self.driver.writeByte(MPU6050_RA_GYRO_CONFIG, c & ~0xE0)
+        self.driver.writeByte(MPU6050_RA_GYRO_CONFIG, c & ~0x18)
+        self.driver.writeByte(MPU6050_RA_GYRO_CONFIG, c |
+                              MPU6050_GYRO_FS_250 << 3)
+
+        c = self.driver.readByte(MPU6050_RA_ACCEL_CONFIG)
+        self.driver.writeByte(MPU6050_RA_ACCEL_CONFIG, c & ~0xE0)
+        self.driver.writeByte(MPU6050_RA_ACCEL_CONFIG, c & ~0x18)
+        self.driver.writeByte(MPU6050_RA_ACCEL_CONFIG,
+                              c | MPU6050_ACCEL_FS_2 << 3)
+
+        self.driver.writeByte(MPU6050_RA_INT_PIN_CFG, 0x22)
+        self.driver.writeByte(MPU6050_RA_INT_ENABLE, 0x01)
 
     def initialize(self):
         self.setClockSource(MPU6050_CLOCK_PLL_XGYRO)
@@ -1035,14 +1056,15 @@ class MPU6050:
         Get raw 6-axis motion sensor readings (accel/gyro).
         @return A new tuple, include: ax, ay, az, gx, gy, gz
         """
-        buffer = self.driver.readBytes(MPU6050_RA_ACCEL_XOUT_H, 14)
-        ax = (buffer[0] << 8) | buffer[1]
-        ay = (buffer[2] << 8) | buffer[3]
-        az = (buffer[4] << 8) | buffer[5]
+        data = self.driver.readWords(MPU6050_RA_ACCEL_XOUT_H, 7)
+        # # skip temperature
+        ax = data[0]
+        ay = data[1]
+        az = data[2]
         # skip temperature
-        gx = (buffer[8] << 8) | buffer[9]
-        gy = (buffer[10] << 8) | buffer[11]
-        gz = (buffer[12] << 8) | buffer[13]
+        gx = data[4]
+        gy = data[5]
+        gz = data[6]
         return (ax, ay, az, gx, gy, gz)
 
     def getAcceleration(self):
@@ -1050,10 +1072,10 @@ class MPU6050:
         Get 3-axis accelerometer readings.
         @return A new tuple, include: ax, ay, az
         """
-        buffer = self.driver.readBytes(MPU6050_RA_ACCEL_XOUT_H, 6)
-        ax = (buffer[0] << 8) | buffer[1]
-        ay = (buffer[2] << 8) | buffer[3]
-        az = (buffer[4] << 8) | buffer[5]
+        buffer = self.driver.readWords(MPU6050_RA_ACCEL_XOUT_H, 3)
+        ax = buffer[0]
+        ay = buffer[1]
+        az = buffer[2]
         return (ax, ay, az)
 
     def getAccelerationX(self):
@@ -1061,42 +1083,42 @@ class MPU6050:
         Get X-axis accelerometer reading.
         @return X-axis acceleration measurement in 16-bit 2's complement format
         """
-        buffer = self.driver.readBytes(MPU6050_RA_ACCEL_XOUT_H, 2)
-        return (buffer[0] << 8) | buffer[1]
+        buffer = self.driver.readWord(MPU6050_RA_ACCEL_XOUT_H)
+        return buffer
 
     def getAccelerationY(self):
         """
         Get Y-axis accelerometer reading.
         @return Y-axis acceleration measurement in 16-bit 2's complement format
         """
-        buffer = self.driver.readBytes(MPU6050_RA_ACCEL_YOUT_H, 2)
-        return (buffer[0] << 8) | buffer[1]
+        buffer = self.driver.readWord(MPU6050_RA_ACCEL_YOUT_H)
+        return buffer
 
     def getAccelerationZ(self):
         """
         Get Z-axis accelerometer reading.
         @return Z-axis acceleration measurement in 16-bit 2's complement format
         """
-        buffer = self.driver.readBytes(MPU6050_RA_ACCEL_ZOUT_H, 2)
-        return (buffer[0] << 8) | buffer[1]
+        buffer = self.driver.readWord(MPU6050_RA_ACCEL_ZOUT_H)
+        return buffer
 
     def getTemperature(self):
         """
         Get current internal temperature.
         @return Temperature reading in 16-bit 2's complement format
         """
-        buffer = self.driver.readBytes(MPU6050_RA_TEMP_OUT_H, 2)
-        return (buffer[0] << 8) | buffer[1]
+        buffer = self.driver.readWord(MPU6050_RA_TEMP_OUT_H)
+        return buffer
 
     def getRotation(self):
         """
         Get 3-axis gyroscope readings.
         @return A new tuple, include: x, y, z
         """
-        buffer = self.driver.readBytes(MPU6050_RA_GYRO_XOUT_H, 6)
-        x = (buffer[0] << 8) | buffer[1]
-        y = (buffer[2] << 8) | buffer[3]
-        z = (buffer[4] << 8) | buffer[5]
+        buffer = self.driver.readWords(MPU6050_RA_GYRO_XOUT_H, 3)
+        x = buffer[0]
+        y = buffer[1]
+        z = buffer[2]
         return (x, y, z)
 
     def getRotationX(self):
@@ -1104,24 +1126,24 @@ class MPU6050:
         Get X-axis gyroscope reading.
         @return X-axis rotation measurement in 16-bit 2's complement format
         """
-        buffer = self.driver.readBytes(MPU6050_RA_GYRO_XOUT_H, 2)
-        return (buffer[0] << 8) | buffer[1]
+        buffer = self.driver.readWord(MPU6050_RA_GYRO_XOUT_H)
+        return buffer
 
     def getRotationY(self):
         """
         Get Y-axis gyroscope reading.
         @return Y-axis rotation measurement in 16-bit 2's complement format
         """
-        buffer = self.driver.readBytes(MPU6050_RA_GYRO_YOUT_H, 2)
-        return (buffer[0] << 8) | buffer[1]
+        buffer = self.driver.readWord(MPU6050_RA_GYRO_YOUT_H)
+        return buffer
 
     def getRotationZ(self):
         """
         Get Z-axis gyroscope reading.
         @return Z-axis rotation measurement in 16-bit 2's complement format
         """
-        buffer = self.driver.readBytes(MPU6050_RA_GYRO_ZOUT_H, 2)
-        return (buffer[0] << 8) | buffer[1]
+        buffer = self.driver.readWord(MPU6050_RA_GYRO_ZOUT_H)
+        return buffer
 
     def getMotionStatus(self):
         """
