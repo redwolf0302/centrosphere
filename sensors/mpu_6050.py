@@ -425,24 +425,26 @@ class MPU6050:
     def dmpInitialize(self):
         # self.reset()
         # I2Cdev::writeBit(devAddr,0x6B, 7, (val = 1));
-        self.driver.writeBit(0x6B, 7, 1)
+        self.driver.writeBit(MPU6050_RA_PWR_MGMT_1,
+                             MPU6050_PWR1_DEVICE_RESET_BIT, 0x01)
         utime.sleep_ms(100)
-        self.driver.writeBits(0x6A, 2, 3, 0B111)
+        # FIFO_RESET I2C_MST_RESET SIG_COND_RESET to reset
+        self.driver.writeBits(MPU6050_RA_USER_CTRL, 2, 3, 0B111)
         utime.sleep_ms(100)
-        self.driver.writeByte(0x6B, 0x01)
-        self.driver.writeByte(0x38, 0x00)
-        self.driver.writeByte(0x23, 0x00)
-        self.driver.writeByte(0x1C, 0x00)
-        self.driver.writeByte(0x37, 0x80)
-        self.driver.writeByte(0x6B, 0x01)
-        self.driver.writeByte(0x19, 0x04)
-        self.driver.writeByte(0x1A, 0x01)
+        self.driver.writeByte(MPU6050_RA_PWR_MGMT_1, 0x01)
+        self.driver.writeByte(MPU6050_RA_INT_ENABLE, 0x00)
+        self.driver.writeByte(MPU6050_RA_FIFO_EN, 0x00)
+        self.driver.writeByte(MPU6050_RA_ACCEL_CONFIG, 0x00)
+        self.driver.writeByte(MPU6050_RA_INT_PIN_CFG, 0x80)
+        self.driver.writeByte(MPU6050_RA_PWR_MGMT_1, 0x01)
+        self.driver.writeByte(MPU6050_RA_SMPLRT_DIV, 0x04)
+        self.driver.writeByte(MPU6050_RA_CONFIG, 0x01)
 
-        # self.driver.writeWords(0x70, 0x01)
-        # self.driver.writeByte(0x1B, 0x18)
-        # self.driver.writeByte(0x6A, 0xC0)
-        # self.driver.writeByte(0x38, 0x02)
-        # self.driver.writeBit(0x6A, 2, 1)
+        # self.driver.writeWords(MPU6050_RA_DMP_CFG_1, 0x01)
+        # self.driver.writeByte(MPU6050_RA_GYRO_CONFIG, 0x18)
+        # self.driver.writeByte(MPU6050_RA_CONFIG, 0xC0)
+        # self.driver.writeByte(MPU6050_RA_INT_ENABLE, 0x02)
+        # self.driver.writeBit(MPU6050_RA_USER_CTRL, 2, 1)
         # self.setDMP
 
     def getAuxVDDIOLevel(self):

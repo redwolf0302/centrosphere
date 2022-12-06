@@ -74,7 +74,6 @@ class MICROPYTHON_I2C:
 
     def readWords(self, register, length):
         newLength = length*2
-        data = bytearray(length)
         buffer = self.readBytes(register, newLength)
         unpacked_buffer = ustruct.unpack('>'+('h'*length), buffer)
         return unpacked_buffer
