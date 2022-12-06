@@ -422,30 +422,30 @@ class MPU6050:
         self.setFullScaleAccelRange(MPU6050_ACCEL_FS_2)
         self.setSleepEnabled(False)
 
-    def dmpInitialize(self):
-        # self.reset()
-        # I2Cdev::writeBit(devAddr,0x6B, 7, (val = 1));
-        self.driver.writeBit(MPU6050_RA_PWR_MGMT_1,
-                             MPU6050_PWR1_DEVICE_RESET_BIT, 0x01)
-        utime.sleep_ms(100)
-        # FIFO_RESET I2C_MST_RESET SIG_COND_RESET to reset
-        self.driver.writeBits(MPU6050_RA_USER_CTRL, 2, 3, 0B111)
-        utime.sleep_ms(100)
-        self.driver.writeByte(MPU6050_RA_PWR_MGMT_1, 0x01)
-        self.driver.writeByte(MPU6050_RA_INT_ENABLE, 0x00)
-        self.driver.writeByte(MPU6050_RA_FIFO_EN, 0x00)
-        self.driver.writeByte(MPU6050_RA_ACCEL_CONFIG, 0x00)
-        self.driver.writeByte(MPU6050_RA_INT_PIN_CFG, 0x80)
-        self.driver.writeByte(MPU6050_RA_PWR_MGMT_1, 0x01)
-        self.driver.writeByte(MPU6050_RA_SMPLRT_DIV, 0x04)
-        self.driver.writeByte(MPU6050_RA_CONFIG, 0x01)
+    # def dmpInitialize(self):
+    #     # self.reset()
+    #     # I2Cdev::writeBit(devAddr,0x6B, 7, (val = 1));
+    #     self.driver.writeBit(MPU6050_RA_PWR_MGMT_1,
+    #                          MPU6050_PWR1_DEVICE_RESET_BIT, 0x01)
+    #     utime.sleep_ms(100)
+    #     # FIFO_RESET I2C_MST_RESET SIG_COND_RESET to reset
+    #     self.driver.writeBits(MPU6050_RA_USER_CTRL, 2, 3, 0B111)
+    #     utime.sleep_ms(100)
+    #     self.driver.writeByte(MPU6050_RA_PWR_MGMT_1, 0x01)
+    #     self.driver.writeByte(MPU6050_RA_INT_ENABLE, 0x00)
+    #     self.driver.writeByte(MPU6050_RA_FIFO_EN, 0x00)
+    #     self.driver.writeByte(MPU6050_RA_ACCEL_CONFIG, 0x00)
+    #     self.driver.writeByte(MPU6050_RA_INT_PIN_CFG, 0x80)
+    #     self.driver.writeByte(MPU6050_RA_PWR_MGMT_1, 0x01)
+    #     self.driver.writeByte(MPU6050_RA_SMPLRT_DIV, 0x04)
+    #     self.driver.writeByte(MPU6050_RA_CONFIG, 0x01)
 
-        # self.driver.writeWords(MPU6050_RA_DMP_CFG_1, 0x01)
-        # self.driver.writeByte(MPU6050_RA_GYRO_CONFIG, 0x18)
-        # self.driver.writeByte(MPU6050_RA_CONFIG, 0xC0)
-        # self.driver.writeByte(MPU6050_RA_INT_ENABLE, 0x02)
-        # self.driver.writeBit(MPU6050_RA_USER_CTRL, 2, 1)
-        # self.setDMP
+    #     # self.driver.writeWords(MPU6050_RA_DMP_CFG_1, 0x01)
+    #     # self.driver.writeByte(MPU6050_RA_GYRO_CONFIG, 0x18)
+    #     # self.driver.writeByte(MPU6050_RA_CONFIG, 0xC0)
+    #     # self.driver.writeByte(MPU6050_RA_INT_ENABLE, 0x02)
+    #     # self.driver.writeBit(MPU6050_RA_USER_CTRL, 2, 1)
+    #     # self.setDMP
 
     def getAuxVDDIOLevel(self):
         """
@@ -1676,57 +1676,57 @@ class MPU6050:
         self.driver.writeBit(MPU6050_RA_INT_ENABLE,
                              MPU6050_INTERRUPT_DMP_INT_BIT, enabled)
 
-    def getDMPInt5Status(self):
-        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_5_BIT)
+    # def getDMPInt5Status(self):
+    #     return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_5_BIT)
 
-    def getDMPInt4Status(self):
-        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_4_BIT)
+    # def getDMPInt4Status(self):
+    #     return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_4_BIT)
 
-    def getDMPInt3Status(self):
-        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_3_BIT)
+    # def getDMPInt3Status(self):
+    #     return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_3_BIT)
 
-    def getDMPInt2Status(self):
-        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_2_BIT)
+    # def getDMPInt2Status(self):
+    #     return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_2_BIT)
 
-    def getDMPInt1Status(self):
-        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_1_BIT)
+    # def getDMPInt1Status(self):
+    #     return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_1_BIT)
 
-    def getDMPInt0Status(self):
-        return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_0_BIT)
+    # def getDMPInt0Status(self):
+    #     return self.driver.readBit(MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_0_BIT)
 
-    def getIntPLLReadyStatus(self):
-        return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_PLL_RDY_INT_BIT)
+    # def getIntPLLReadyStatus(self):
+    #     return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_PLL_RDY_INT_BIT)
 
-    def getIntDMPStatus(self):
-        return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_DMP_INT_BIT)
+    # def getIntDMPStatus(self):
+    #     return self.driver.readBit(MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_DMP_INT_BIT)
 
-    def getDMPEnabled(self):
-        return self.driver.readBit(MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_EN_BIT)
+    # def getDMPEnabled(self):
+    #     return self.driver.readBit(MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_EN_BIT)
 
-    def setDMPEnabled(self, enabled):
-        self.driver.writeBit(MPU6050_RA_USER_CTRL,
-                             MPU6050_USERCTRL_DMP_EN_BIT, enabled)
+    # def setDMPEnabled(self, enabled):
+    #     self.driver.writeBit(MPU6050_RA_USER_CTRL,
+    #                          MPU6050_USERCTRL_DMP_EN_BIT, enabled)
 
-    def resetDMP(self):
-        self.driver.writeBit(MPU6050_RA_USER_CTRL,
-                             MPU6050_USERCTRL_DMP_RESET_BIT, True)
+    # def resetDMP(self):
+    #     self.driver.writeBit(MPU6050_RA_USER_CTRL,
+    #                          MPU6050_USERCTRL_DMP_RESET_BIT, True)
 
-    def setMemoryBank(self, bank, prefetchEnabled, userBank):
-        bank &= 0x1F
-        if userBank:
-            bank |= 0x20
-        if prefetchEnabled:
-            bank |= 0x40
-        self.driver.writeByte(MPU6050_RA_BANK_SEL, bank)
+    # def setMemoryBank(self, bank, prefetchEnabled, userBank):
+    #     bank &= 0x1F
+    #     if userBank:
+    #         bank |= 0x20
+    #     if prefetchEnabled:
+    #         bank |= 0x40
+    #     self.driver.writeByte(MPU6050_RA_BANK_SEL, bank)
 
-    def setMemoryStartAddress(self, address):
-        self.driver.writeByte(MPU6050_RA_MEM_START_ADDR, address)
+    # def setMemoryStartAddress(self, address):
+    #     self.driver.writeByte(MPU6050_RA_MEM_START_ADDR, address)
 
-    def readMemoryByte(self):
-        return self.driver.readByte(MPU6050_RA_MEM_R_W)
+    # def readMemoryByte(self):
+    #     return self.driver.readByte(MPU6050_RA_MEM_R_W)
 
-    def writeMemoryByte(self, data):
-        self.driver.writeByte(MPU6050_RA_MEM_R_W, data)
+    # def writeMemoryByte(self, data):
+    #     self.driver.writeByte(MPU6050_RA_MEM_R_W, data)
 
     # def readMemoryBlock(self, data, bank, address):
     #     pass
@@ -1743,17 +1743,17 @@ class MPU6050:
     # def writeProgDMPConfigurationSet(self, data):
     #     return self.writeDMPConfigurationSet(data, False)
 
-    def getDMPConfig1(self):
-        return self.driver.readByte(MPU6050_RA_DMP_CFG_1)
+    # def getDMPConfig1(self):
+    #     return self.driver.readByte(MPU6050_RA_DMP_CFG_1)
 
-    def setDMPConfig1(self, config):
-        self.driver.writeByte(MPU6050_RA_DMP_CFG_1, config)
+    # def setDMPConfig1(self, config):
+    #     self.driver.writeByte(MPU6050_RA_DMP_CFG_1, config)
 
-    def getDMPConfig2(self):
-        return self.driver.readByte(MPU6050_RA_DMP_CFG_2)
+    # def getDMPConfig2(self):
+    #     return self.driver.readByte(MPU6050_RA_DMP_CFG_2)
 
-    def setDMPConfig2(self, config):
-        self.driver.writeByte(MPU6050_RA_DMP_CFG_2, config)
+    # def setDMPConfig2(self, config):
+    #     self.driver.writeByte(MPU6050_RA_DMP_CFG_2, config)
 
     # def PID(self, readAddress, kP, kI, loops):
     #     saveAddress = (0x60 if self.getDeviceID() <
