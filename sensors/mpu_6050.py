@@ -497,14 +497,14 @@ class MPU6050:
     def getDLPFMode(self):
         """
         Get digital low-pass filter configuration.
-        @return DLFP configuration
+        @return DLPF configuration
         """
         return self.driver.readBits(MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT, MPU6050_CFG_DLPF_CFG_LENGTH)
 
     def setDLPFMode(self, mode):
         """
         Set digital low-pass filter configuration.
-        @param mode New DLFP configuration setting
+        @param mode New DLPF configuration setting
         """
         self.driver.writeBits(
             MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT, MPU6050_CFG_DLPF_CFG_LENGTH, mode)
@@ -544,7 +544,7 @@ class MPU6050:
         buffer[1] = self.driver.readByte(MPU6050_RA_SELF_TEST_A)
         return (buffer[0] >> 3) | ((buffer[1] >> 2) & 0x03)
 
-    def getAccelYSelfTestFactoryTrim(self):
+    def getAccelZSelfTestFactoryTrim(self):
         """
         Get self-test factory trim value for accelerometer Z axis.
         @return factory trim value

@@ -14,3 +14,6 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
         print("connection ok")
+
+    # print(sensor.getXFineGain())
+    print(sensor.getMotion9())
